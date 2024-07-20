@@ -4,10 +4,25 @@ from typing import Dict, Optional
 from datetime import datetime
 from models import SessionLocal, engine
 import models, crud, schemas
+from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
+
 
 def get_db():
     db = SessionLocal()
@@ -37,6 +52,13 @@ def get_cliente(cliente_id: int, db: Session = Depends(get_db)):
     if cliente_state is None:
         raise HTTPException(status_code=404, detail="Cliente no encontrado")
     return cliente_state
+
+@app.get("/clientes")
+def get_cliente(db: Session = Depends(get_db)):
+    cliente_list = crud.get_all(db=db)
+    if cliente_list is None:
+        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+    return cliente_list
 
 @app.get("/clientes/{cliente_id}/at", response_model=schemas.ClienteState)
 def get_cliente_at(cliente_id: int, timestamp: datetime = Query(...), db: Session = Depends(get_db)):

@@ -1,15 +1,17 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+
+#Data Schemas to be used by the CRUD methods
 class ClienteCreate(BaseModel):
-    nombre: str
+    name: str
 
 class BalanceUpdate(BaseModel):
     amount: float
 
 class ClienteState(BaseModel):
     id: int
-    nombre: str
+    name: str
     balance: float
 
 class TimestampQuery(BaseModel):

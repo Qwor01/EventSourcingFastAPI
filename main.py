@@ -31,43 +31,43 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/clientes/", response_model=Dict)
-def create_cliente(cliente: schemas.ClienteCreate, db: Session = Depends(get_db))->Dict:
-    event = crud.create_cliente(db=db, cliente=cliente)
+@app.post("/clients", response_model=Dict)
+def create_cliente(client: schemas.ClienteCreate, db: Session = Depends(get_db))->Dict:
+    event = crud.create_client(db=db, client=client)
     return {"event_id": event.id}
 
-@app.put("/clientes/{cliente_id}/balance", response_model=Dict)
-def update_balance(cliente_id: int, balance_update: schemas.BalanceUpdate, db: Session = Depends(get_db)):
-    event = crud.update_balance(db=db, cliente_id=cliente_id, balance_update=balance_update)
+@app.put("/clients/{client_id}/balance", response_model=Dict)
+def update_balance(client_id: int, balance_update: schemas.BalanceUpdate, db: Session = Depends(get_db)):
+    event = crud.update_balance(db=db, client_id=client_id, balance_update=balance_update)
     return {"event_id": event.id}
 
-@app.delete("/clientes/{cliente_id}", response_model=Dict)
-def delete_cliente(cliente_id: int, db: Session = Depends(get_db)):
-    event = crud.delete_cliente(db=db, cliente_id=cliente_id)
+@app.delete("/clients/{client_id}", response_model=Dict)
+def delete_cliente(client_id: int, db: Session = Depends(get_db)):
+    event = crud.delete_client(db=db, client_id=client_id)
     return {"event_id": event.id}
 
-@app.get("/clientes/{cliente_id}", response_model=schemas.ClienteState)
-def get_cliente(cliente_id: int, db: Session = Depends(get_db)):
-    cliente_state = crud.get_cliente_state(db=db, cliente_id=cliente_id)
+@app.get("/clients/{client_id}", response_model=schemas.ClienteState)
+def get_cliente(client_id: int, db: Session = Depends(get_db)):
+    cliente_state = crud.get_client_state(db=db, client_id=client_id)
     if cliente_state is None:
-        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+        raise HTTPException(status_code=404, detail="Client not found")
     return cliente_state
 
-@app.get("/clientes")
+@app.get("/clients", response_model=Dict)
 def get_cliente(db: Session = Depends(get_db)):
     cliente_list = crud.get_all(db=db)
     if cliente_list is None:
-        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+        raise HTTPException(status_code=404, detail="Client not found")
     return cliente_list
 
-@app.get("/clientes/{cliente_id}/at", response_model=schemas.ClienteState)
-def get_cliente_at(cliente_id: int, timestamp: datetime = Query(...), db: Session = Depends(get_db)):
-    cliente_state = crud.get_cliente_state(db=db, cliente_id=cliente_id, timestamp=timestamp)
+@app.get("/clients/{client_id}/at", response_model=schemas.ClienteState)
+def get_cliente_at(client_id: int, timestamp: datetime = Query(...), db: Session = Depends(get_db)):
+    cliente_state = crud.get_client_state(db=db, client_id=client_id, timestamp=timestamp)
     if cliente_state is None:
-        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+        raise HTTPException(status_code=404, detail="Client not found")
     return cliente_state
 
-@app.post("/clientes/{client_id}/restore", response_model=Dict)
+@app.post("/clients/{client_id}/restore", response_model=Dict)
 def restore_client_at(client_id: int, timestamp: schemas.TimestampQuery, db: Session = Depends(get_db))->Dict:
     event = crud.restore_client(db=db, client_id=client_id, timestamp=timestamp)
     return {"event_id":event.id}

@@ -5,6 +5,8 @@ from enum import Enum as PyEnum
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
+
+#Connects to a database named events, in case it doesn't exists, it is created
 DATABASE_URL = "sqlite:///./events.db"
 
 Base = declarative_base()

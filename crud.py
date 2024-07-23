@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
 from models import Event, EventType
-from schemas import ClienteCreate, BalanceUpdate
+from schemas import ClientCreate, BalanceUpdate
 import json
 from datetime import datetime
 
@@ -14,7 +14,7 @@ def create_event(db: Session, event_type: EventType, data: dict):
     return event
 
 #Function for the event to create a client
-def create_client(db: Session, client: ClienteCreate):
+def create_client(db: Session, client: ClientCreate):
     event_data = {"name": client.name}
     return create_event(db, EventType.CLIENT_CREATED, event_data)
 

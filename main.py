@@ -32,7 +32,7 @@ def get_db():
         db.close()
 
 @app.post("/clients", response_model=Dict)
-def create_cliente(client: schemas.ClienteCreate, db: Session = Depends(get_db))->Dict:
+def create_cliente(client: schemas.ClientCreate, db: Session = Depends(get_db))->Dict:
     event = crud.create_client(db=db, client=client)
     return {"event_id": event.id}
 
@@ -46,21 +46,21 @@ def delete_cliente(client_id: int, db: Session = Depends(get_db)):
     event = crud.delete_client(db=db, client_id=client_id)
     return {"event_id": event.id}
 
-@app.get("/clients/{client_id}", response_model=schemas.ClienteState)
+@app.get("/clients/{client_id}", response_model=schemas.ClientState)
 def get_cliente(client_id: int, db: Session = Depends(get_db)):
     cliente_state = crud.get_client_state(db=db, client_id=client_id)
     if cliente_state is None:
         raise HTTPException(status_code=404, detail="Client not found")
     return cliente_state
 
-@app.get("/clients", response_model=Dict)
+@app.get("/clients", response_model=schemas.ClientResponse)
 def get_cliente(db: Session = Depends(get_db)):
     cliente_list = crud.get_all(db=db)
     if cliente_list is None:
         raise HTTPException(status_code=404, detail="Client not found")
     return cliente_list
 
-@app.get("/clients/{client_id}/at", response_model=schemas.ClienteState)
+@app.get("/clients/{client_id}/at", response_model=schemas.ClientState)
 def get_cliente_at(client_id: int, timestamp: datetime = Query(...), db: Session = Depends(get_db)):
     cliente_state = crud.get_client_state(db=db, client_id=client_id, timestamp=timestamp)
     if cliente_state is None:

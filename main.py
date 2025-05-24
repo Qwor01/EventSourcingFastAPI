@@ -41,10 +41,7 @@ def update_balance(client_id: int, balance_update: schemas.BalanceUpdate, db: Se
     event = crud.update_balance(db=db, client_id=client_id, balance_update=balance_update)
     return {"event_id": event.id}
 
-@app.delete("/clients/{client_id}", response_model=Dict)
-def delete_client(client_id: int, db: Session = Depends(get_db)):
-    event = crud.delete_client(db=db, client_id=client_id)
-    return {"event_id": event.id}
+
 
 @app.get("/clients/{client_id}", response_model=schemas.ClientState)
 def get_client(client_id: int, db: Session = Depends(get_db)):
@@ -68,6 +65,14 @@ def get_client_at(client_id: int, timestamp: datetime = Query(...), db: Session 
     return cliente_state
 
 @app.post("/clients/{client_id}/restore", response_model=Dict)
-def restore_client_at(client_id: int, timestamp: schemas.TimestampQuery, db: Session = Depends(get_db))->Dict:
-    event = crud.restore_client(db=db, client_id=client_id, timestamp=timestamp)
-    return {"event_id":event.id}
+def restore_client_at(
+    client_id: int,
+    query: schemas.TimestampQuery,
+    db: Session = Depends(get_db)
+) -> Dict:
+    event = crud.restore_client(
+        db=db,
+        client_id=client_id,
+        timestamp=query.timestamp 
+    )
+    return {"event_id": event.id}

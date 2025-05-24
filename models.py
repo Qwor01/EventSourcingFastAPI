@@ -16,7 +16,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 class EventType(PyEnum):
     CLIENT_CREATED = "CLIENT_CREATED"
     BALANCE_UPDATED = "BALANCE_UPDATED"
-    CLIENT_DELETED = "CLIENT_DELETED"
     CLIENT_RESTORED = "CLIENT_RESTORED"
     
 class Event(Base):
